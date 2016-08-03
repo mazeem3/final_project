@@ -17,7 +17,8 @@ gem 'bootstrap-sass'
 gem 'faker'
 gem 'geocoder'
 gem 'yelp', require: 'yelp'
-
+gem 'dotenv-rails', :groups => [:development, :test]
+gem 'doorkeeper'
 
 
 group :development, :test do

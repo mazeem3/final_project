@@ -1,10 +1,19 @@
 class MapsController < ApplicationController
-  def show
-    
+  def index
   end
-  def search
-    parameters = { term: params[:term], limit: 16 }
-    render json: Yelp.client.search('San Francisco', parameters)
+
+  def results
+  	@food = params[:food]
+  	@location = params[:location]
+  	parameters = { term: @food, limit: 9 }
+
+  	@results = Yelp.client.search(@location, parameters)
+  end
+
+  def test
+    parameters = { term: "pancakes", limit: 10 }
+
+    @results = Yelp.client.search('Atlanta, GA', parameters)
   end
 
 end
