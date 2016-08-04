@@ -5,7 +5,7 @@ class PropertyController < ApplicationController
 
     def search
         rillow = Rillow.new'X1-ZWz19n208o61hn_8xo7s'
-        result_nasty = rillow.get_search_results('2114 Bigelow Ave', 'Seattle, WA')
+        result_nasty = rillow.get_search_results('Sugar Land, Tx')
         result = result_nasty.to_hash
         @results = pp result
     end
