@@ -19,6 +19,7 @@ gem 'geocoder'
 gem 'yelp', require: 'yelp'
 gem 'dotenv-rails', :groups => [:development, :test]
 gem 'doorkeeper'
+gem 'rillow', '~> 0.2.0'
 
 
 group :development, :test do

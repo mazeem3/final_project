@@ -5,5 +5,7 @@ Rails.application.routes.draw do
 
   root 'maps#index'
 
+  get 'property' => 'property#show'
+
 
 end
