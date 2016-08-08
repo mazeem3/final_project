@@ -1,19 +1,50 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-  </head>
-  <body>
-    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-    <div id="map"></div>
-    <script>
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+        <div id="map"></div>
+        <script>
 
-      function initAutocomplete() {
+        function initMap() {
+          var property = {
+              lat: <%= @user.latitude %>,
+              lng: <%= @user.longitude %>
+          };
         var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -33.8688, lng: 151.2195},
+          center: property,
           zoom: 13,
           mapTypeId: 'roadmap'
+        });
+        var contentString = '<div id="content"><div id="siteNotice"></div><h1 id="firstHeading" class="firstHeading">Uluru</h1><div id="bodyContent"><p><b>My House</b>, also referred to as <b>Maaz House</b>,' +
+                '</p>'
+        var infowindow = new google.maps.InfoWindow({content: contentString});
+
+        var service = new google.maps.places.PlacesService(map);
+        service.getDetails({
+         placeId: 'ChIJN1t_tDeuEmsRUsoyG83frY4'
+       }, function(place, status) {
+         if (status === google.maps.places.PlacesServiceStatus.OK) {
+           var marker = new google.maps.Marker({
+             map: map,
+             position: place.geometry.location
+           });
+           google.maps.event.addListener(marker, 'click', function() {
+             infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
+               'Place ID: ' + place.place_id + '<br>' +
+               place.formatted_address + '</div>');
+             infowindow.open(map, this);
+           });
+         }
+       });
+
+
+        var marker = new google.maps.Marker({position: property, map: map, title: 'Uluru (Ayers Rock)'});
+        marker.addListener('click', function () {
+            infowindow.open(map, marker);
         });
 
         // Create the search box and link it to the UI element.
@@ -76,8 +107,8 @@
         });
       }
 
-    </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjWDRMKvLrDwFxqutyccPKkJnn1PRg37g&libraries=places&callback=initAutocomplete"
-         async defer></script>
-  </body>
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjWDRMKvLrDwFxqutyccPKkJnn1PRg37g&libraries=places&callback=initMap" async defer></script>
+
+    </body>
 </html>

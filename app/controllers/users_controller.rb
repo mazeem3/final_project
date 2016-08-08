@@ -1,10 +1,23 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-
+    #
+    # def create
+    #   @user = User.new
+    #   @user.username = params[:user][:username]
+    #   @user.password = params[:user][:password]
+    #   @user.password_confirmation = params[:user][:password_confirmation]
+    #   if @user.save
+    #     # we should also sign them in
+    #     session[:user_id] = @user.id
+    #     redirect_to root_path, notice: "Welcome!"
+    #   else
+    #     render :new
+    #   end
+    # end
   # GET /users
   # GET /users.json
   def index
-    @users = User.all
+    @users = User.where("id != ?", @current_user.id)
   end
 
   # GET /users/1
@@ -69,6 +82,6 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:latitude, :longitude, :name, :address, :email)
+      params.require(:user).permit(:name, :username, :address, :emails, :password, :password_confirmation)
     end
 end
