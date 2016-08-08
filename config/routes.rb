@@ -7,5 +7,10 @@ Rails.application.routes.draw do
 
   get 'property' => 'property#show'
 
+  get 'sign_in' => 'sessions#new', as: :sign_in
+  post 'sign_in' => 'sessions#create'
+  delete 'sign_in' => 'sessions#delete'
+
+
 
 end
