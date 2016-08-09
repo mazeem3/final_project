@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :users
   get 'users/map/:id' => 'maps#show', as: :map
 
-  root 'maps#index'
+  root 'property#index'
 
   get 'property' => 'property#show'
 
