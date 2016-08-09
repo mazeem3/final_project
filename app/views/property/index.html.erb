@@ -32,24 +32,25 @@
 
         var size = gon.add.length
         var search_marker = []
+        var estimate
 
 
-        for(var i = 0; i < size; i++)
-        {
-
-          var estimate = gon.est[i];
+        for(var i = 0; i < size; i++){
           var search_marker = new google.maps.Marker({
             position: {lat: parseFloat(gon.lat[i]), lng: parseFloat(gon.lng[i])},
             map: map,
-            title: gon.add[i]
-
+            title: gon.add[i],
+            estimate: gon.est[i]
           });
 
               var info = new google.maps.InfoWindow();
                 search_marker.addListener('click', function () {
-                  info.setContent('<h5>' + this.title + '</h5>'+'<br>'+ '<b> Zestimate: ' + estimate +'</b>');
+
+                  info.setContent('<h5>' + this.title + '</h5>'+'<br>'+ '<b> Zestimate:' + this.estimate +'</b>');
                     info.open(map, this);
                 });
+                console.log("gon.est", typeof (gon.est[i]));
+
         }
 
         // Create the search box and link it to the UI element.
