@@ -41,8 +41,9 @@ class PropertyController < ApplicationController
         zpid = zsearch['zpid']
         @zpid = zpid.join(',')
         @addresses = []
+        @zestimate = []
         # number of properties returned
-        @num_search = 3
+        @num_search = 10
         # list properties near zpid
         list = rillow.get_comps(@zpid.to_s, @num_search)
         # get initial property details
@@ -51,15 +52,17 @@ class PropertyController < ApplicationController
         i = 0
         loop do
             @addresses << list['response'][0]['properties'][0]['comparables'][0]['comp'][i]['address']
+            @zestimate << list['response'][0]['properties'][0]['comparables'][0]['comp'][i]['zestimate']
             i += 1
             break if i == @num_search
         end
 
         #search results address
         x = 0
-        @sr_address = []
+        @sr_address= []
         @add_lat = []
         @add_lng = []
+        @sr_zestimate = []
         loop do
           @sr_address[x] = @addresses[x][0]['street']
           @sr_address[x] << @addresses[x][0]['city']
@@ -67,23 +70,15 @@ class PropertyController < ApplicationController
           @sr_address[x] << @addresses[x][0]['zipcode']
           @add_lat[x] = @addresses[x][0]['latitude']
           @add_lng[x] = @addresses[x][0]['longitude']
+          @sr_zestimate[x] = @zestimate[x][0]['amount'][0]['content']
           x += 1
             break if x == @num_search
         end
 
-        @prop_add, @prop_lat, @prop_lng = []
-        gon.add = @sr_address.collect{ |i| i }
+        gon.add = @sr_address.collect{ |i| i.join(", ") }
         gon.lat = @add_lat.collect {|i| i}
         gon.lng = @add_lng.collect {|i| i}
-
-
-        # @sr_address = @sr_address.join(", ")
-
-
-        puts gon.lat[0].join
-        puts gon.lng[0]
-
-        puts '==============================='
+        gon.est = @sr_zestimate.collect {|i| i.to_f}
 
     end
 

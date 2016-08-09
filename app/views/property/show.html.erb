@@ -1,22 +1,22 @@
 
 
 <br>
-<%= @zpid %>
 
 <br><br><br>
 
 
-<%= @property_details %>
 
 <br><br><br>
-<%= @prime_address.to_s %>
+
 <br><br><br>
 
 <script type="text/javascript">
-lat = String(gon.lat[0])
-document.write(lat)
-document.write(gon.add.length)
+var size = gon.est.length
+for(var i = 0; i < size; i++){
+  document.write(gon.est[i])
+  document.write("<br>");
 
+};
 </script>
 
 <!-- # <%= @comp %>

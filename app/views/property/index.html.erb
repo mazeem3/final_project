@@ -16,7 +16,7 @@
           };
         var map = new google.maps.Map(document.getElementById('map'), {
           center: property,
-          zoom: 13,
+          zoom: 16,
           mapTypeId: 'roadmap'
         });
         var contentString = '<div id="content"><div id="siteNotice"></div><h3 id="firstHeading" class="firstHeading"><%= @prime_address %></h3>'
@@ -31,18 +31,26 @@
         });
 
         var size = gon.add.length
-        for(i = 0; i <= size; i++)
+        var search_marker = []
+
+
+        for(var i = 0; i < size; i++)
         {
+
+          var estimate = gon.est[i];
           var search_marker = new google.maps.Marker({
             position: {lat: parseFloat(gon.lat[i]), lng: parseFloat(gon.lng[i])},
             map: map,
-            title: 'Primary location'});
+            title: gon.add[i]
+
+          });
+
+              var info = new google.maps.InfoWindow();
+                search_marker.addListener('click', function () {
+                  info.setContent('<h5>' + this.title + '</h5>'+'<br>'+ '<b> Zestimate: ' + estimate +'</b>');
+                    info.open(map, this);
+                });
         }
-
-
-
-
-
 
         // Create the search box and link it to the UI element.
         var input = document.getElementById('pac-input');
