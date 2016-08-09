@@ -15,15 +15,17 @@ class PropertyController < ApplicationController
         rillow = Rillow.new'X1-ZWz19n208o61hn_8xo7s'
         result = rillow.get_deep_search_results('4203 Montrose Blvd', 'Houston, Tx').to_hash
         # get the zillow id for initial location
-        latitude = result['response'][0]['results'][0]['result'][0]['address'][0]["latitude"]
-        longitude = result['response'][0]['results'][0]['result'][0]['address'][0]["longitude"]
+        zsearch = result['response'][0]['results'][0]['result'][0]
+
+        latitude = zsearch['address'][0]["latitude"]
+        longitude = zsearch['address'][0]["longitude"]
         prime_address = []
-        prime_address << result['response'][0]['results'][0]['result'][0]['address'][0]['street']
-        prime_address << result['response'][0]['results'][0]['result'][0]['address'][0]['city']
-        prime_address << result['response'][0]['results'][0]['result'][0]['address'][0]['zipcode']
-        pa_bath = result['response'][0]['results'][0]['result'][0]['bathrooms']
-        pa_bed = result['response'][0]['results'][0]['result'][0]['bedrooms']
-        pa_price = result['response'][0]['results'][0]['result'][0]['zestimate'][0]['amount'][0]['content']
+        prime_address << zsearch['address'][0]['street']
+        prime_address << zsearch['address'][0]['city']
+        prime_address << zsearch['address'][0]['zipcode']
+        pa_bath = zsearch['bathrooms']
+        pa_bed = zsearch['bedrooms']
+        pa_price = zsearch['zestimate'][0]['amount'][0]['content']
 
         @prime_address = prime_address.join(", ")
         @pa_bath = pa_bath.join
@@ -36,24 +38,52 @@ class PropertyController < ApplicationController
 
 
 
-        zpid = result['response'][0]['results'][0]['result'][0]['zpid']
+        zpid = zsearch['zpid']
         @zpid = zpid.join(',')
         @addresses = []
         # number of properties returned
-        num_search = 1
+        @num_search = 3
         # list properties near zpid
-        list = rillow.get_comps(@zpid.to_s, num_search)
+        list = rillow.get_comps(@zpid.to_s, @num_search)
         # get initial property details
         @initial_details = list['response'][0]['properties'][0]['principal'][0]['address']
         # add all returned location to array
         i = 0
         loop do
-            @addresses << list['response'][0]['properties'][0]['comparables'][0]['comp'][i]
+            @addresses << list['response'][0]['properties'][0]['comparables'][0]['comp'][i]['address']
             i += 1
-            break if i == num_search
+            break if i == @num_search
         end
+
+        #search results address
+        x = 0
+        @sr_address = []
+        @add_lat = []
+        @add_lng = []
+        loop do
+          @sr_address[x] = @addresses[x][0]['street']
+          @sr_address[x] << @addresses[x][0]['city']
+          @sr_address[x] << @addresses[x][0]['state']
+          @sr_address[x] << @addresses[x][0]['zipcode']
+          @add_lat[x] = @addresses[x][0]['latitude']
+          @add_lng[x] = @addresses[x][0]['longitude']
+          x += 1
+            break if x == @num_search
+        end
+
+        @prop_add, @prop_lat, @prop_lng = []
+        gon.add = @sr_address.collect{ |i| i }
+        gon.lat = @add_lat.collect {|i| i}
+        gon.lng = @add_lng.collect {|i| i}
+
+
+        # @sr_address = @sr_address.join(", ")
+
+
+        puts gon.lat[0].join
+        puts gon.lng[0]
+
         puts '==============================='
-        pp @addresses.inspect
 
     end
 
