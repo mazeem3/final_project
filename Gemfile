@@ -21,6 +21,11 @@ gem 'doorkeeper'
 gem 'rillow', '~> 0.2.0'
 gem 'leaflet-rails'
 gem 'gon'
+gem 'gmaps4rails'
+gem 'underscore-rails'
+gem 'http'
+
+
 
 
 group :development, :test do
