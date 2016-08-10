@@ -1,52 +1,51 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Latitude:</strong>
-  <%= @user.latitude %>
+    <strong>Latitude:</strong>
+    <%= @user.latitude %>
 </p>
 
 <p>
-  <strong>Longitude:</strong>
-  <%= @user.longitude %>
+    <strong>Longitude:</strong>
+    <%= @user.longitude %>
 </p>
 
 <p>
-  <strong>Name:</strong>
-  <%= @user.name %>
+    <strong>Name:</strong>
+    <%= @user.name %>
 </p>
 
 <p>
-  <strong>Address:</strong>
-  <%= @user.address %>
+    <strong>Address:</strong>
+    <%= @user.address %>
 </p>
 
 <p>
-  <strong>Email:</strong>
-  <%= @user.email %>
+    <strong>Email:</strong>
+    <%= @user.email %>
 </p>
 
 <body>
-  <h3>Location</h3><small><%= @user.latitude %><br><%= @user.longitude %></small>
-  <div id="map"></div>
-  <script>
-    function initMap() {
-      var myLatLng = {lat: <%= @user.latitude %>, lng: <%= @user.longitude %>};
-      var mapDiv = document.getElementById('map');
-      var map = new google.maps.Map(mapDiv, {
-        zoom: 12,
-        center: myLatLng
-      });
-      var marker = new google.maps.Marker({
-  position: myLatLng,
-  map: map,
-  title: 'Hello World!'
-});
-    }
-  </script>
-  <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjWDRMKvLrDwFxqutyccPKkJnn1PRg37g&callback=initMap">
-  </script>
+    <h3>Location</h3>
+    <small><%= @user.latitude %><br><%= @user.longitude %></small>
+    <div id="map"></div>
+    <script>
+        function initMap() {
+            var myLatLng = {
+                lat: <%= @user.latitude %>,
+                lng: <%= @user.longitude %>
+            };
+            var mapDiv = document.getElementById('map');
+            var map = new google.maps.Map(mapDiv, {
+                zoom: 12,
+                center: myLatLng
+            });
+            var marker = new google.maps.Marker({position: myLatLng, map: map, title: 'Hello World!'});
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjWDRMKvLrDwFxqutyccPKkJnn1PRg37g&callback=initMap"></script>
 </body>
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
+<%= link_to 'Edit', edit_user_path(@user) %>
+|
 <%= link_to 'Back', users_path %>

@@ -2,23 +2,35 @@ class PropertyController < ApplicationController
     require 'rubygems'
     require 'rillow'
     require 'pp'
+
     before_action except: :show do
         redirect_to sign_in_path, alert: 'Please Sign In' if @current_user.nil?
     end
 
-    def create
+    before_action only: [:search, :show, :index] do
+        search_google_places
+    end
 
+    def create
     end
 
     def search
-
         rillow = Rillow.new'X1-ZWz19n208o61hn_8xo7s'
-        result = rillow.get_deep_search_results('4203 Montrose Blvd', 'Houston, Tx').to_hash
+
+        result = rillow.get_deep_search_results(@street, @city_state).to_hash
+
         # get the zillow id for initial location
+        # test if it has results
+
+        if result['response'].blank?
+          flash[:notice] = 'No properties found'
+          redirect_to root_path
+
+        else
         zsearch = result['response'][0]['results'][0]['result'][0]
 
-        latitude = zsearch['address'][0]["latitude"]
-        longitude = zsearch['address'][0]["longitude"]
+        latitude = zsearch['address'][0]['latitude']
+        longitude = zsearch['address'][0]['longitude']
         prime_address = []
         prime_address << zsearch['address'][0]['street']
         prime_address << zsearch['address'][0]['city']
@@ -27,16 +39,13 @@ class PropertyController < ApplicationController
         pa_bed = zsearch['bedrooms']
         pa_price = zsearch['zestimate'][0]['amount'][0]['content']
 
-        @prime_address = prime_address.join(", ")
+        @prime_address = prime_address.join(', ')
         @pa_bath = pa_bath.join
         @pa_bed = pa_bed.join
         @pa_price = pa_price
 
         @prime_lon = longitude.join.to_f
         @prime_lat = latitude.join.to_f
-
-
-
 
         zpid = zsearch['zpid']
         @zpid = zpid.join(',')
@@ -56,39 +65,65 @@ class PropertyController < ApplicationController
             i += 1
             break if i == @num_search
         end
-
-        #search results address
+        # search results address
         x = 0
-        @sr_address= []
+        @sr_address = []
         @add_lat = []
         @add_lng = []
         @sr_zestimate = []
         loop do
-          @sr_address[x] = @addresses[x][0]['street']
-          @sr_address[x] << @addresses[x][0]['city']
-          @sr_address[x] << @addresses[x][0]['state']
-          @sr_address[x] << @addresses[x][0]['zipcode']
-          @add_lat[x] = @addresses[x][0]['latitude']
-          @add_lng[x] = @addresses[x][0]['longitude']
-          @sr_zestimate[x] = @zestimate[x][0]['amount'][0]['content']
-          x += 1
+            @sr_address[x] = @addresses[x][0]['street']
+            @sr_address[x] << @addresses[x][0]['city']
+            @sr_address[x] << @addresses[x][0]['state']
+            @sr_address[x] << @addresses[x][0]['zipcode']
+            @add_lat[x] = @addresses[x][0]['latitude']
+            @add_lng[x] = @addresses[x][0]['longitude']
+            @sr_zestimate[x] = @zestimate[x][0]['amount'][0]['content']
+            x += 1
             break if x == @num_search
         end
 
-        gon.add = @sr_address.collect{ |i| i.join(", ") }
-        gon.lat = @add_lat.collect {|i| i}
-        gon.lng = @add_lng.collect {|i| i}
-        gon.est = @sr_zestimate.collect {|i| i.to_f}
-
+        gon.add = @sr_address.collect { |i| i.join(', ') }
+        gon.lat = @add_lat.collect { |i| i }
+        gon.lng = @add_lng.collect { |i| i }
+        gon.est = @sr_zestimate.collect(&:to_f)
+        end
     end
 
     def show
         search
     end
 
-    def index
-      search
+    def search_google_places
+        place_id = params[:place_id] || 'ChIJXUPcIm6_QIYR9_qtbzRyy5w'
+        puts place_id
+        puts '========================='
+        url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=#{place_id}&key=AIzaSyAjWDRMKvLrDwFxqutyccPKkJnn1PRg37g"
+
+        json = JSON.parse(Http.get(url).body)
+        puts '========================'
+        street = []
+        city_state = []
+        subpremise = json['result']['address_components'][0]['types'][0]
+        if subpremise == 'subpremise'
+            street << json['result']['address_components'][1]['long_name']
+            street << json['result']['address_components'][2]['long_name']
+            city_state << json['result']['address_components'][4]['long_name']
+            city_state << json['result']['address_components'][6]['long_name']
+        else
+            street << json['result']['address_components'][0]['long_name']
+            street << json['result']['address_components'][1]['long_name']
+            city_state << json['result']['address_components'][3]['long_name']
+            city_state << json['result']['address_components'][5]['long_name']
+        end
+        puts @street
+        puts @city_state
+
+        @street = street.join(' ')
+        @city_state = city_state.join(', ')
     end
 
-
+    def index
+        search
+    end
 end

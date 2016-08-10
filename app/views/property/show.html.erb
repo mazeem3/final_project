@@ -1,28 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <div id="map"></div>
+        <script>
+
+            function initMap() {
+                var property = {
+                    lat: <%= @prime_lat %>,
+                    lng: <%= @prime_lon %>
+                };
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    center: property,
+                    zoom: 13,
+                    mapTypeId: 'roadmap'
+                });
+                var contentString = '<div id="content"><div id="siteNotice"></div><h3 id="firstHeading" class="firstHeading"><%= @prime_address %></h3>'+
+                '<div id="bodyContent"><p><b><%= @pa_bed %> bedrooms / <%= @pa_bath %> baths </b>,+ <b>Zestimate: <%= @pa_price %> </b></p>'
+                var infowindow = new google.maps.InfoWindow({content: contentString});
 
 
-<br>
+                var marker = new google.maps.Marker({
+                  position: property,
+                  map: map,
+                  title: 'Primary location'
+                });
+                marker.addListener('click', function () {
+                    infowindow.open(map, marker);
+                });
 
-<br><br><br>
+                var size = gon.add.length
+                var search_marker = []
+                var estimate
 
+                for (var i = 0; i < size; i++) {
+                    var search_marker = new google.maps.Marker({
+                        position: {
+                            lat: parseFloat(gon.lat[i]),
+                            lng: parseFloat(gon.lng[i])
+                        },
+                        map: map,
+                        title: gon.add[i],
+                        estimate: gon.est[i]
+                    });
 
+                    var info = new google.maps.InfoWindow();
+                    search_marker.addListener('click', function () {
 
-<br><br><br>
+                        info.setContent('<h5>' + this.title + '</h5><br><b> Zestimate: $' + this.estimate + '</b>');
+                        info.open(map, this);
+                    });
+                    console.log("gon.est", typeof(gon.est[i]));
+                }
+            }
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjWDRMKvLrDwFxqutyccPKkJnn1PRg37g&callback=initMap" async defer></script>
 
-<br><br><br>
-
-<script type="text/javascript">
-var size = gon.est.length
-for(var i = 0; i < size; i++){
-  document.write(gon.est[i])
-  document.write("<br>");
-
-};
-</script>
-
-<!-- # <%= @comp %>
-# <br><br><br>
-# <%= @following %>
-# <br><br><br>
-# <%= @following1 %>
-# <br><br><br>
-# <%= @following2 %> -->
+    </body>
+</html>
