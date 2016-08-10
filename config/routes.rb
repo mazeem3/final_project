@@ -6,9 +6,7 @@ Rails.application.routes.draw do
 
   root 'property#index'
 
-  get 'property' => 'property#show'
-  get 'maps' => 'property#maps'
-  get 'places' => 'property#places'
+  get 'property' => 'property#show' as: :properties
 
   get 'sign_in' => 'sessions#new', as: :sign_in
   post 'sign_in' => 'sessions#create'
