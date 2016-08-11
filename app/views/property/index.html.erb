@@ -5,6 +5,7 @@
         <meta charset="utf-8">
     </head>
     <body>
+
         <input id="pac-input" class="controls" type="text" placeholder="Search Box">
         <% if flash[:notice] %>
         <div class="notice"><%= flash[:notice] %></div>
@@ -19,7 +20,7 @@
                 };
                 var map = new google.maps.Map(document.getElementById('map'), {
                     center: property,
-                    zoom: 13,
+                    zoom: 10,
                     mapTypeId: 'roadmap'
                 });
                 var infowindow = new google.maps.InfoWindow();
@@ -86,7 +87,7 @@
                             }, (function (places_marker) {
                                 return function (place, status) {
                                     if (status === google.maps.places.PlacesServiceStatus.OK) {
-                                        infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + place.formatted_address + '<br>View Place'.link("https://zillow.com") + '.<br>Find Homes'.link("/property?place_id=" + place.place_id) + '</div>');
+                                        infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + place.formatted_address + '<br>Find Homes'.link("/property?place_id=" + place.place_id) + '</div>');
                                         infowindow.open(map, places_marker);
                                     }
                                 }

@@ -44,13 +44,14 @@
                         },
                         map: map,
                         title: gon.add[i],
-                        estimate: gon.est[i]
+                        estimate: gon.est[i],
+                        website: gon.web[i]
                     });
 
                     var info = new google.maps.InfoWindow();
                     search_marker.addListener('click', function () {
 
-                        info.setContent('<h5>' + this.title + '</h5><br><b> Zestimate: $' + this.estimate + '</b>');
+                        info.setContent('<h5>' + this.title + '</h5><br><b> Zestimate: $' + this.estimate + '</b>'+'<br>' +'<br><a target = "_blank" href ="' + this.website + '">More details</a>');
                         info.open(map, this);
                     });
                     console.log("gon.est", typeof(gon.est[i]));
