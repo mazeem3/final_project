@@ -1,7 +1,19 @@
+
+@import 'https://necolas.github.io/normalize.css/3.0.3/normalize.css';
+.jumbo {
+  height: 100vh; //visual height units
+  border: 1px solid #000000;
+  background: image_url("back-house.jpg");
+  background-size: cover; // scale as the .jumbo grows and shrinks
+  background-position: center; // center the bg instead of putting at top-left
+}
+
 body,html {
     height: 100%;
     margin: 0;
     padding: 0;
+    font-family: 'Oswald', sans-serif;
+
 }
 #map-container {
     height: 400px;
@@ -64,19 +76,29 @@ body,html {
     margin-top: 0; // remove the gap so it doesn't close
 }
 div.container-fluid {
-  transition: all 0.5s ease;
 
-    opacity: 0;
-    background: black;
+    background: #0b1c4c;
 }
-div.container-fluid:hover {
-    opacity: 1;
+.navbar-default {
+    background-color: #f8f8f8;
+    border: none;
 }
-nav.navbar.navbar-default {
-  transition: all 0.5s ease;
-
-    opacity: 0;
+.well {
+   background-color: rgba(245, 245, 245, 0.4);
+   border: none;
 }
-nav.navbar.navbar-default:hover {
-    opacity: 1;
+.navbar-default .navbar-brand {
+    color: #f5f5f5;
+}
+.navbar-default .navbar-nav > li > a {
+    color: #f5f5f5;
+}
+.custom-button-width {
+	width:100%;
+}
+div.col-sm-4 h1{
+  color: white;
+}
+div.well h3{
+  color: white;
 }
