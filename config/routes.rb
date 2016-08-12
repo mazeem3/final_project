@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   root 'property#index'
 
-  get 'property' => 'property#show' as: :properties
+  get 'property' => 'property#show' 
 
   get 'sign_in' => 'sessions#new', as: :sign_in
   post 'sign_in' => 'sessions#create'

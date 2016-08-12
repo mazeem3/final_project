@@ -47,21 +47,25 @@ class PropertyController < ApplicationController
         @prime_lon = longitude.join.to_f
         @prime_lat = latitude.join.to_f
 
+
         zpid = zsearch['zpid']
+        puts zpid
+        puts "^^^^^^^^^^^^^^^"
         @zpid = zpid.join(',')
         @addresses = []
         @zestimate = []
+        @web_address = []
         # number of properties returned
         @num_search = 10
         # list properties near zpid
         list = rillow.get_comps(@zpid.to_s, @num_search)
         # get initial property details
-        @initial_details = list['response'][0]['properties'][0]['principal'][0]['address']
         # add all returned location to array
         i = 0
         loop do
             @addresses << list['response'][0]['properties'][0]['comparables'][0]['comp'][i]['address']
             @zestimate << list['response'][0]['properties'][0]['comparables'][0]['comp'][i]['zestimate']
+            @web_address << list['response'][0]['properties'][0]['comparables'][0]['comp'][i]['links'][0]["homedetails"][0]
             i += 1
             break if i == @num_search
         end
@@ -71,6 +75,8 @@ class PropertyController < ApplicationController
         @add_lat = []
         @add_lng = []
         @sr_zestimate = []
+        @sr_website = []
+
         loop do
             @sr_address[x] = @addresses[x][0]['street']
             @sr_address[x] << @addresses[x][0]['city']
@@ -79,6 +85,7 @@ class PropertyController < ApplicationController
             @add_lat[x] = @addresses[x][0]['latitude']
             @add_lng[x] = @addresses[x][0]['longitude']
             @sr_zestimate[x] = @zestimate[x][0]['amount'][0]['content']
+            @sr_website[x] = @web_address[x]
             x += 1
             break if x == @num_search
         end
@@ -87,6 +94,7 @@ class PropertyController < ApplicationController
         gon.lat = @add_lat.collect { |i| i }
         gon.lng = @add_lng.collect { |i| i }
         gon.est = @sr_zestimate.collect(&:to_f)
+        gon.web = @sr_website.collect { |i| i }
         end
     end
 
